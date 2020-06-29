@@ -1,0 +1,368 @@
+<?xml version="1.0"?>
+
+<robot name="em_3905" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- chassis_length is measured along the x axis, chassis_width
+       along the y axis, and chassis_height along the z axis. -->
+  <xacro:property name="chassis_length" value="1.0"/>
+  <xacro:property name="chassis_width" value="0.168"/>
+  <xacro:property name="chassis_height" value="0.02"/>
+  <xacro:property name="chassis_mass" value="2.788"/>
+
+  <!-- hub_dia and tire_dia are the diameters of the hub and tire,
+       respectively. hex_hub_depth is the distance that the hex hub is
+       inset from the outer edge of the tire. It is set so that each wheel
+       is a "zero offset" wheel. hex_hub_depth = tire_width / 2 -
+       axle_length. -->
+  <xacro:property name="hub_dia" value="0.09652"/>
+  <xacro:property name="tire_dia" value="0.14605"/>
+  <xacro:property name="tire_width" value="0.0889"/>
+  <xacro:property name="hex_hub_depth" value="0.01445"/>
+  <xacro:property name="wheel_mass" value="0.29"/>
+
+  <!-- hex_hub_dist is the distance between left and right hex hubs when
+       the shock absorbers are fully extended. axle_length is the distance
+       from a U joint to the corresponding hex hub. wheel_travel is the
+       vertical wheel travel. -->
+  <xacro:property name="wheelbase" value="0.335"/>
+  <xacro:property name="hex_hub_dist" value="0.365"/>
+  <xacro:property name="axle_length" value="0.03"/>
+  <xacro:property name="wheel_travel" value="0.084"/>
+  <xacro:property name="shock_z_offset" value="0.0655"/>
+
+  <!-- The specifications for a Titan(R) 550 motor could not be found, so the
+       stall torque of a Mabuchi Motor(R) RS-550VC-7525 motor was used instead.
+
+       num_spur_gear_teeth = 68
+       num_pinion_gear_teeth = 19
+       final_gear_ratio = (num_spur_gear_teeth / num_pinion_gear_teeth) *
+         5.22 = 18.68
+       stall_torque = 0.549 N m
+       axle_eff_limit = ((2 * stall_torque) * final_gear_ratio) / 4 =
+         5.12766 N m
+
+       max_speed = 40 mph (30+ mph) = 17.8816 m/s
+       axle_vel_limit = (2 * pi) * (max_speed / (pi * tire_dia)) =
+         244.8696 rad/s -->
+  <xacro:property name="axle_eff_limit" value="5.12766"/>
+  <xacro:property name="axle_vel_limit" value="244.8696"/>
+
+  <!-- These constants are used to simulate a Traxxas 2056 servo operated at
+       6 V. servo_stall_torque is measured in N m. servo_no_load_speed is
+       measured in rad/s. -->
+  <xacro:property name="servo_stall_torque" value="0.5649"/>
+  <xacro:property name="servo_no_load_speed" value="4.553"/>
+
+  <!-- ctrl_period is gazebo_ros_control's control period. Unit: hertz. -->
+  <xacro:property name="ctrl_period" value="0.01"/>
+
+  <material name="chassis_mat">
+    <color rgba="0.5 0.5 0.5 1"/>
+  </material>
+  <material name="tire_mat">
+    <color rgba="0 0 0 1"/>
+  </material>
+
+  <!-- Null inertial element. This is needed to make the model work with
+       Gazebo. -->
+  <xacro:macro name="null_inertial">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
+    </inertial>
+  </xacro:macro>
+
+  <!-- Inertia of a solid cuboid. Width is measured along the x axis, depth
+       along the y axis, and height along the z axis. -->
+  <xacro:macro name="solid_cuboid_inertial"
+               params="width depth height mass *origin">
+    <inertial>
+      <xacro:insert_block name="origin"/>
+      <mass value="${mass}"/>
+      <inertia ixx="${mass * (depth * depth + height * height) / 12}"
+               ixy="0" ixz="0"
+               iyy="${mass * (width * width + height * height) / 12}"
+               iyz="0"
+               izz="${mass * (width * width + depth * depth) / 12}"/>
+    </inertial>
+  </xacro:macro>
+
+  <!-- Inertia of a thick-walled cylindrical tube with open ends. Height is
+       measured along the z axis, which is the tube's axis. inner_rad and
+       outer_rad are the tube's inner and outer radii, respectively. -->
+  <xacro:macro name="thick_walled_tube_inertial"
+               params="inner_rad outer_rad height mass">
+    <inertial>
+      <mass value="${mass}"/>
+      <inertia ixx="${(1 / 12) * mass * (3 * (inner_rad * inner_rad +
+                    outer_rad * outer_rad) + height * height)}"
+               ixy="0" ixz="0"
+               iyy="${(1 / 12) * mass * (3 * (inner_rad * inner_rad +
+                    outer_rad * outer_rad) + height * height)}"
+               iyz="0"
+               izz="${mass * (inner_rad * inner_rad +
+                    outer_rad * outer_rad) / 2}"/>
+    </inertial>
+  </xacro:macro>
+
+
+  <!-- base_link must have geometry so that its axes can be displayed in
+       rviz. -->
+  <link name="base_link"/>
+
+  <!-- Chassis -->
+  <link name="chassis">
+    <visual>
+      <origin xyz="0 0 ${-chassis_height / 2}"/>
+      <geometry>
+        <box size="${chassis_length} ${chassis_width} ${chassis_height}"/>
+      </geometry>
+      <material name="chassis_mat"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 ${-chassis_height / 2}"/>
+      <geometry>
+        <box size="${chassis_length} ${chassis_width} ${chassis_height}"/>
+      </geometry>
+    </collision>
+    <xacro:solid_cuboid_inertial
+        width="${chassis_length}" depth="${chassis_width}"
+        height="${chassis_height}" mass="${chassis_mass}">
+      <origin xyz="0 0 ${-chassis_height / 2}"/>
+    </xacro:solid_cuboid_inertial>
+  </link>
+  <joint name="base_link_to_chasis" type="fixed">
+    <parent link="base_link"/>
+    <child link="chassis"/>
+  </joint>
+  <gazebo reference="chassis">
+    <material>Gazebo/White</material>
+  </gazebo>
+
+  <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+  <!-- FRONT -->
+
+  <!-- axel_carrier -->
+  <!-- left -->
+  <link name="left_front_axle_carrier">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
+    </inertial>
+  </link>
+  <joint name="left_steering_joint" type="revolute">
+    <parent link="chassis"/>
+    <child link="left_front_axle_carrier"/>
+    <origin xyz="0.1675 0.1525 -0.0235"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="0.5649" lower="-0.785398163" upper="0.785398163" velocity="4.553"/>
+  </joint>
+  <transmission name="left_steering_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="left_steering_joint">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="left_steering_act">
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <!-- right -->
+  <link name="right_front_axle_carrier">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
+    </inertial>
+  </link>
+  <joint name="right_steering_joint" type="revolute">
+    <parent link="chassis"/>
+    <child link="right_front_axle_carrier"/>
+    <origin xyz="0.1675 -0.1525 -0.0235"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="0.5649" lower="-0.785398163" upper="0.785398163" velocity="4.553"/>
+  </joint>
+  <transmission name="right_steering_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="right_steering_joint">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="right_steering_act">
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  
+
+  <!-- wheel -->
+  <!-- left -->
+  <link name="left_front_wheel">
+    <visual>
+      <origin xyz="0                      -6.93889390391e-18                      0"/>
+      <geometry>
+        <cylinder length="0.0889" radius="0.073025"/>
+      </geometry>
+      <material name="tire_mat"/>
+    </visual>
+    <collision>
+      <origin xyz="0                      -6.93889390391e-18                      0"/>
+      <geometry>
+        <cylinder length="0.0889" radius="0.073025"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.29"/>
+      <inertia ixx="0.000746465912979" ixy="0" ixz="0" iyy="0.000746465912979" iyz="0" izz="0.00111094334263"/>
+    </inertial>
+  </link>
+  <joint name="left_front_axle" type="continuous">
+    <parent link="left_front_axle_carrier"/>
+    <child link="left_front_wheel"/>
+    <origin rpy="1.57079633 0 0"/>
+    <axis xyz="0 0 -1"/>
+    <limit effort="5.12766" velocity="244.8696"/>
+  </joint>
+  <transmission name="left_front_axle_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="left_front_axle">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="left_front_axle_act">
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <gazebo reference="left_front_wheel">
+    <material>Gazebo/Black</material>
+  </gazebo>
+  <!-- right -->
+  <link name="right_front_wheel">
+    <visual>
+      <origin xyz="0                      6.93889390391e-18                      0"/>
+      <geometry>
+        <cylinder length="0.0889" radius="0.073025"/>
+      </geometry>
+      <material name="tire_mat"/>
+    </visual>
+    <collision>
+      <origin xyz="0                      6.93889390391e-18                      0"/>
+      <geometry>
+        <cylinder length="0.0889" radius="0.073025"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.29"/>
+      <inertia ixx="0.000746465912979" ixy="0" ixz="0" iyy="0.000746465912979" iyz="0" izz="0.00111094334263"/>
+    </inertial>
+  </link>
+  <joint name="right_front_axle" type="continuous">
+    <parent link="right_front_axle_carrier"/>
+    <child link="right_front_wheel"/>
+    <origin rpy="1.57079633 0 0"/>
+    <axis xyz="0 0 -1"/>
+    <limit effort="5.12766" velocity="244.8696"/>
+  </joint>
+  <transmission name="right_front_axle_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="right_front_axle">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="right_front_axle_act">
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <gazebo reference="right_front_wheel">
+    <material>Gazebo/Black</material>
+  </gazebo>
+
+  <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+  <!-- REAR -->
+
+  <!-- wheels -->
+  <!-- left -->
+  <link name="left_rear_wheel">
+    <visual>
+      <origin xyz="0                      -6.93889390391e-18                      0"/>
+      <geometry>
+        <cylinder length="0.0889" radius="0.073025"/>
+      </geometry>
+      <material name="tire_mat"/>
+    </visual>
+    <collision>
+      <origin xyz="0                      -6.93889390391e-18                      0"/>
+      <geometry>
+        <cylinder length="0.0889" radius="0.073025"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.29"/>
+      <inertia ixx="0.000746465912979" ixy="0" ixz="0" iyy="0.000746465912979" iyz="0" izz="0.00111094334263"/>
+    </inertial>
+  </link>
+  <joint name="left_rear_axle" type="continuous">
+    <parent link="chassis"/>
+    <child link="left_rear_wheel"/>
+    <origin xyz="-0.1675 0.1525 -0.0235" rpy="1.57079633 0 0"/>
+    <axis xyz="0 0 -1"/>
+    <limit effort="5.12766" velocity="244.8696"/>
+  </joint>
+  <transmission name="left_rear_axle_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="left_rear_axle">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="left_rear_axle_act">
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <gazebo reference="left_rear_wheel">
+    <material>Gazebo/Black</material>
+  </gazebo>
+  <!-- right -->
+  <link name="right_rear_wheel">
+    <visual>
+      <origin xyz="0                      6.93889390391e-18                      0"/>
+      <geometry>
+        <cylinder length="0.0889" radius="0.073025"/>
+      </geometry>
+      <material name="tire_mat"/>
+    </visual>
+    <collision>
+      <origin xyz="0                      6.93889390391e-18                      0"/>
+      <geometry>
+        <cylinder length="0.0889" radius="0.073025"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.29"/>
+      <inertia ixx="0.000746465912979" ixy="0" ixz="0" iyy="0.000746465912979" iyz="0" izz="0.00111094334263"/>
+    </inertial>
+  </link>
+  <joint name="right_rear_axle" type="continuous">
+    <parent link="chassis"/>
+    <child link="right_rear_wheel"/>
+    <origin xyz="-0.1675 -0.1525 -0.0235" rpy="1.57079633 0 0"/>
+    <axis xyz="0 0 -1"/>
+    <limit effort="5.12766" velocity="244.8696"/>
+  </joint>
+  <transmission name="right_rear_axle_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="right_rear_axle">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="right_rear_axle_act">
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <gazebo reference="right_rear_wheel">
+    <material>Gazebo/Black</material>
+  </gazebo>
+
+  <!-- gazebo plugins for control and odometry ground truth-->
+  <gazebo>
+    <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so" />
+    <plugin name="gazebo_ros_p3d"     filename="libgazebo_ros_p3d.so">
+      <frameName>map</frameName>
+      <bodyName>base_link</bodyName>
+      <topicName>odom_truth</topicName>
+      <updateRate>30.0</updateRate>
+    </plugin>
+  </gazebo>
+
+</robot>
