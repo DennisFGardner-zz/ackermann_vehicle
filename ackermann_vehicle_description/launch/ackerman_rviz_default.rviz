@@ -66,25 +66,11 @@ Visualization Manager:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-        camera_mount:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
         chassis:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        left_battery:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        left_battery_offset:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
         left_front_axle_carrier:
           Alpha: 1
           Show Axes: false
@@ -104,15 +90,6 @@ Visualization Manager:
           Show Trail: false
           Value: true
         left_steering_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        right_battery:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        right_battery_offset:
           Alpha: 1
           Show Axes: false
           Show Trail: false
@@ -138,31 +115,6 @@ Visualization Manager:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-        stereo_camera_center:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        stereo_left_camera_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        stereo_left_camera_optical_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        stereo_right_camera_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        stereo_right_camera_optical_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
       Name: RobotModel
       Robot Description: robot_description
       TF Prefix: ""
@@ -171,9 +123,9 @@ Visualization Manager:
       Visual Enabled: true
     - Class: rviz/Axes
       Enabled: true
-      Length: 0.10000000149011612
+      Length: 0.5
       Name: Axes
-      Radius: 0.10000000149011612
+      Radius: 0.009999999776482582
       Reference Frame: <Fixed Frame>
       Value: true
     - Class: rviz/TF
@@ -183,13 +135,7 @@ Visualization Manager:
         All Enabled: true
         base_link:
           Value: true
-        camera_mount:
-          Value: true
         chassis:
-          Value: true
-        left_battery:
-          Value: true
-        left_battery_offset:
           Value: true
         left_front_axle_carrier:
           Value: true
@@ -201,10 +147,6 @@ Visualization Manager:
           Value: true
         left_steering_link:
           Value: true
-        right_battery:
-          Value: true
-        right_battery_offset:
-          Value: true
         right_front_axle_carrier:
           Value: true
         right_front_wheel:
@@ -215,16 +157,6 @@ Visualization Manager:
           Value: true
         right_steering_link:
           Value: true
-        stereo_camera_center:
-          Value: true
-        stereo_left_camera_frame:
-          Value: true
-        stereo_left_camera_optical_frame:
-          Value: true
-        stereo_right_camera_frame:
-          Value: true
-        stereo_right_camera_optical_frame:
-          Value: true
       Marker Scale: 1
       Name: TF
       Show Arrows: true
@@ -233,17 +165,6 @@ Visualization Manager:
       Tree:
         base_link:
           chassis:
-            camera_mount:
-              stereo_camera_center:
-                stereo_left_camera_frame:
-                  stereo_left_camera_optical_frame:
-                    {}
-                stereo_right_camera_frame:
-                  stereo_right_camera_optical_frame:
-                    {}
-            left_battery_offset:
-              left_battery:
-                {}
             left_rear_axle_carrier:
               left_rear_wheel:
                 {}
@@ -251,9 +172,6 @@ Visualization Manager:
               left_front_axle_carrier:
                 left_front_wheel:
                   {}
-            right_battery_offset:
-              right_battery:
-                {}
             right_rear_axle_carrier:
               right_rear_wheel:
                 {}
@@ -291,7 +209,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 10
+      Distance: 2.125654935836792
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -328,4 +246,4 @@ Window Geometry:
     collapsed: false
   Width: 1200
   X: 67
-  Y: 30
+  Y: 27
