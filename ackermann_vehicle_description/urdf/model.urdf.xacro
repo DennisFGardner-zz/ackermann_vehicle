@@ -47,34 +47,6 @@
   <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
   <!-- FRONT -->
 
-  <!-- steering_link -->
-  <!-- left -->
-  <link name="left_steering_link">
-    <inertial>
-      <mass value="0.001"/>
-      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
-    </inertial>
-  </link>
-  <joint name="left_front_shock" type="fixed">
-    <parent link="chassis"/>
-    <child link="left_steering_link"/>
-    <origin xyz="0.1675 0.1525 -0.0235"/>
-    <axis xyz="0 0 -1"/>
-  </joint>
-  <!-- right -->
-  <link name="right_steering_link">
-    <inertial>
-      <mass value="0.001"/>
-      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
-    </inertial>
-  </link>
-  <joint name="right_front_shock" type="fixed">
-    <parent link="chassis"/>
-    <child link="right_steering_link"/>
-    <origin xyz="0.1675                    -0.1525                    -0.0235"/>
-    <axis xyz="0 0 -1"/>
-  </joint>
-
   <!-- axel_carrier -->
   <!-- left -->
   <link name="left_front_axle_carrier">
@@ -84,8 +56,9 @@
     </inertial>
   </link>
   <joint name="left_steering_joint" type="revolute">
-    <parent link="left_steering_link"/>
+    <parent link="chassis"/>
     <child link="left_front_axle_carrier"/>
+    <origin xyz="0.1675 0.1525 -0.0235"/>
     <axis xyz="0 0 1"/>
     <limit effort="0.5649" lower="-0.785398163" upper="0.785398163" velocity="4.553"/>
   </joint>
@@ -106,8 +79,9 @@
     </inertial>
   </link>
   <joint name="right_steering_joint" type="revolute">
-    <parent link="right_steering_link"/>
+    <parent link="chassis"/>
     <child link="right_front_axle_carrier"/>
+    <origin xyz="0.1675 -0.1525 -0.0235"/>
     <axis xyz="0 0 1"/>
     <limit effort="0.5649" lower="-0.785398163" upper="0.785398163" velocity="4.553"/>
   </joint>
