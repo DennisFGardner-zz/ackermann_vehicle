@@ -120,10 +120,7 @@
   <!-- axel_carrier -->
   <!-- left -->
   <link name="left_front_axle_carrier">
-    <inertial>
-      <mass value="0.001"/>
-      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
-    </inertial>
+    <xacro:null_inertial/>
   </link>
   <joint name="left_steering_joint" type="revolute">
     <parent link="chassis"/>
@@ -143,10 +140,7 @@
   </transmission>
   <!-- right -->
   <link name="right_front_axle_carrier">
-    <inertial>
-      <mass value="0.001"/>
-      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
-    </inertial>
+    <xacro:null_inertial/>
   </link>
   <joint name="right_steering_joint" type="revolute">
     <parent link="chassis"/>
