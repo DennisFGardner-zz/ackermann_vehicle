@@ -30,31 +30,6 @@
   <xacro:property name="wheel_travel" value="0.084"/>
   <xacro:property name="shock_z_offset" value="0.0655"/>
 
-  <!-- The specifications for a Titan(R) 550 motor could not be found, so the
-       stall torque of a Mabuchi Motor(R) RS-550VC-7525 motor was used instead.
-
-       num_spur_gear_teeth = 68
-       num_pinion_gear_teeth = 19
-       final_gear_ratio = (num_spur_gear_teeth / num_pinion_gear_teeth) *
-         5.22 = 18.68
-       stall_torque = 0.549 N m
-       axle_eff_limit = ((2 * stall_torque) * final_gear_ratio) / 4 =
-         5.12766 N m
-
-       max_speed = 40 mph (30+ mph) = 17.8816 m/s
-       axle_vel_limit = (2 * pi) * (max_speed / (pi * tire_dia)) =
-         244.8696 rad/s -->
-  <xacro:property name="axle_eff_limit" value="5.12766"/>
-  <xacro:property name="axle_vel_limit" value="244.8696"/>
-
-  <!-- These constants are used to simulate a Traxxas 2056 servo operated at
-       6 V. servo_stall_torque is measured in N m. servo_no_load_speed is
-       measured in rad/s. -->
-  <xacro:property name="servo_stall_torque" value="0.5649"/>
-  <xacro:property name="servo_no_load_speed" value="4.553"/>
-
-  <!-- ctrl_period is gazebo_ros_control's control period. Unit: hertz. -->
-  <xacro:property name="ctrl_period" value="0.01"/>
 
   <material name="chassis_mat">
     <color rgba="0.5 0.5 0.5 1"/>
@@ -207,10 +182,9 @@
         <cylinder length="0.0889" radius="0.073025"/>
       </geometry>
     </collision>
-    <inertial>
-      <mass value="0.29"/>
-      <inertia ixx="0.000746465912979" ixy="0" ixz="0" iyy="0.000746465912979" iyz="0" izz="0.00111094334263"/>
-    </inertial>
+    <xacro:thick_walled_tube_inertial
+        inner_rad="${hub_dia / 2}" outer_rad="${tire_dia / 2}"
+        height="${tire_width}" mass="${wheel_mass}"/>
   </link>
   <joint name="left_front_axle" type="continuous">
     <parent link="left_front_axle_carrier"/>
@@ -246,10 +220,9 @@
         <cylinder length="0.0889" radius="0.073025"/>
       </geometry>
     </collision>
-    <inertial>
-      <mass value="0.29"/>
-      <inertia ixx="0.000746465912979" ixy="0" ixz="0" iyy="0.000746465912979" iyz="0" izz="0.00111094334263"/>
-    </inertial>
+    <xacro:thick_walled_tube_inertial
+        inner_rad="${hub_dia / 2}" outer_rad="${tire_dia / 2}"
+        height="${tire_width}" mass="${wheel_mass}"/>
   </link>
   <joint name="right_front_axle" type="continuous">
     <parent link="right_front_axle_carrier"/>
@@ -290,10 +263,9 @@
         <cylinder length="0.0889" radius="0.073025"/>
       </geometry>
     </collision>
-    <inertial>
-      <mass value="0.29"/>
-      <inertia ixx="0.000746465912979" ixy="0" ixz="0" iyy="0.000746465912979" iyz="0" izz="0.00111094334263"/>
-    </inertial>
+    <xacro:thick_walled_tube_inertial
+        inner_rad="${hub_dia / 2}" outer_rad="${tire_dia / 2}"
+        height="${tire_width}" mass="${wheel_mass}"/>
   </link>
   <joint name="left_rear_axle" type="continuous">
     <parent link="chassis"/>
@@ -329,10 +301,9 @@
         <cylinder length="0.0889" radius="0.073025"/>
       </geometry>
     </collision>
-    <inertial>
-      <mass value="0.29"/>
-      <inertia ixx="0.000746465912979" ixy="0" ixz="0" iyy="0.000746465912979" iyz="0" izz="0.00111094334263"/>
-    </inertial>
+    <xacro:thick_walled_tube_inertial
+        inner_rad="${hub_dia / 2}" outer_rad="${tire_dia / 2}"
+        height="${tire_width}" mass="${wheel_mass}"/>
   </link>
   <joint name="right_rear_axle" type="continuous">
     <parent link="chassis"/>
