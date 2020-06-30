@@ -27,14 +27,7 @@
   <xacro:property name="hub_dia" value="0.09652"/>
   <xacro:property name="tire_dia" value="0.14605"/>
   <xacro:property name="tire_width" value="0.0889"/>
-  <xacro:property name="hex_hub_depth" value="0.01445"/>
   <xacro:property name="wheel_mass" value="0.29"/>
-
-  <xacro:property name="wheelbase" value="0.335"/>
-  <xacro:property name="hex_hub_dist" value="0.365"/>
-  <xacro:property name="axle_length" value="0.03"/>
-  <xacro:property name="wheel_travel" value="0.084"/>
-  <xacro:property name="shock_z_offset" value="0.0655"/>
   
   <!-- - - - - - - - - - - Inertia Macros - - - - - - - - - - -->
   
@@ -77,6 +70,7 @@
   </xacro:macro>
   
   <!-- - - - - - - - - - - colors - - - - - - - - - - -->
+  
   <material name="chassis_mat">
     <color rgba="0.5 0.5 0.5 1"/>
   </material>
@@ -92,14 +86,14 @@
   <!-- chassis -->
   <link name="chassis">
     <visual>
-      <origin xyz="0 0 ${-chassis_height / 2}"/>
+      <origin xyz="0 0 ${-chassis_height/2}"/>
       <geometry>
         <box size="${chassis_length} ${chassis_width} ${chassis_height}"/>
       </geometry>
       <material name="chassis_mat"/>
     </visual>
     <collision>
-      <origin xyz="0 0 ${-chassis_height / 2}"/>
+      <origin xyz="0 0 ${-chassis_height/2}"/>
       <geometry>
         <box size="${chassis_length} ${chassis_width} ${chassis_height}"/>
       </geometry>
@@ -107,7 +101,7 @@
     <xacro:solid_cuboid_inertial
         width="${chassis_length}" depth="${chassis_width}"
         height="${chassis_height}" mass="${chassis_mass}">
-      <origin xyz="0 0 ${-chassis_height / 2}"/>
+      <origin xyz="0 0 ${-chassis_height/2}"/>
     </xacro:solid_cuboid_inertial>
   </link>
   <joint name="base_link_to_chasis" type="fixed">
