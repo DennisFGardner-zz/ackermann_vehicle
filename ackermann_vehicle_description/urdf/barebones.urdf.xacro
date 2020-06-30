@@ -145,162 +145,92 @@
 
   <!-- wheel -->
   <!-- left -->
-  <link name="left_front_wheel">
-    <visual>
-      <origin xyz="0                      -6.93889390391e-18                      0"/>
-      <geometry>
-        <cylinder length="0.0889" radius="0.073025"/>
-      </geometry>
-      <material name="tire_mat"/>
-    </visual>
-    <collision>
-      <origin xyz="0                      -6.93889390391e-18                      0"/>
-      <geometry>
-        <cylinder length="0.0889" radius="0.073025"/>
-      </geometry>
-    </collision>
-    <xacro:thick_walled_tube_inertial
-        inner_rad="${hub_dia / 2}" outer_rad="${tire_dia / 2}"
+  <xacro:macro name="front_wheel" params="lr_prefix lr_reflect">
+    <link name="${lr_prefix}_front_wheel">
+      <visual>
+        <origin xyz="0 0 0"/>
+        <geometry>
+        <cylinder length="${tire_width}" radius="${tire_dia/2}"/>
+        </geometry>
+        <material name="tire_mat"/>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0"/>
+        <geometry>
+        <cylinder length="${tire_width}" radius="${tire_dia/2}"/>
+        </geometry>
+      </collision>
+      <xacro:thick_walled_tube_inertial
+        inner_rad="${hub_dia/2}" outer_rad="${tire_dia/2}"
         height="${tire_width}" mass="${wheel_mass}"/>
-  </link>
-  <joint name="left_front_axle" type="continuous">
-    <parent link="left_front_axle_carrier"/>
-    <child link="left_front_wheel"/>
-    <origin rpy="1.57079633 0 0"/>
-    <axis xyz="0 0 -1"/>
-    <limit effort="5.12766" velocity="244.8696"/>
-  </joint>
-  <transmission name="left_front_axle_trans">
-    <type>transmission_interface/SimpleTransmission</type>
-    <joint name="left_front_axle">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </link>
+    <joint name="${lr_prefix}_front_axle" type="continuous">
+        <parent link="${lr_prefix}_front_axle_carrier"/>
+        <child link="${lr_prefix}_front_wheel"/>
+        <origin rpy="${pi/2} 0 0"/>
+        <axis xyz="0 0 -1"/>
+        <limit effort="5.12766" velocity="244.8696"/>
     </joint>
-    <actuator name="left_front_axle_act">
-      <mechanicalReduction>1</mechanicalReduction>
-    </actuator>
-  </transmission>
-  <gazebo reference="left_front_wheel">
-    <material>Gazebo/Black</material>
-  </gazebo>
-  <!-- right -->
-  <link name="right_front_wheel">
-    <visual>
-      <origin xyz="0                      6.93889390391e-18                      0"/>
-      <geometry>
-        <cylinder length="0.0889" radius="0.073025"/>
-      </geometry>
-      <material name="tire_mat"/>
-    </visual>
-    <collision>
-      <origin xyz="0                      6.93889390391e-18                      0"/>
-      <geometry>
-        <cylinder length="0.0889" radius="0.073025"/>
-      </geometry>
-    </collision>
-    <xacro:thick_walled_tube_inertial
-        inner_rad="${hub_dia / 2}" outer_rad="${tire_dia / 2}"
-        height="${tire_width}" mass="${wheel_mass}"/>
-  </link>
-  <joint name="right_front_axle" type="continuous">
-    <parent link="right_front_axle_carrier"/>
-    <child link="right_front_wheel"/>
-    <origin rpy="1.57079633 0 0"/>
-    <axis xyz="0 0 -1"/>
-    <limit effort="5.12766" velocity="244.8696"/>
-  </joint>
-  <transmission name="right_front_axle_trans">
-    <type>transmission_interface/SimpleTransmission</type>
-    <joint name="right_front_axle">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-    </joint>
-    <actuator name="right_front_axle_act">
-      <mechanicalReduction>1</mechanicalReduction>
-    </actuator>
-  </transmission>
-  <gazebo reference="right_front_wheel">
-    <material>Gazebo/Black</material>
-  </gazebo>
+    <transmission name="${lr_prefix}_front_axle_trans">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="${lr_prefix}_front_axle">
+        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="${lr_prefix}_front_axle_act">
+        <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+    <gazebo reference="${lr_prefix}_front_wheel">
+        <material>Gazebo/Black</material>
+    </gazebo>
+  </xacro:macro>
+  <xacro:front_wheel lr_prefix="left" lr_reflect="1"/>
+  <xacro:front_wheel lr_prefix="right" lr_reflect="-1"/>  
+
 
   <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
   <!-- REAR -->
-
-  <!-- wheels -->
-  <!-- left -->
-  <link name="left_rear_wheel">
-    <visual>
-      <origin xyz="0                      -6.93889390391e-18                      0"/>
-      <geometry>
-        <cylinder length="0.0889" radius="0.073025"/>
-      </geometry>
-      <material name="tire_mat"/>
-    </visual>
-    <collision>
-      <origin xyz="0                      -6.93889390391e-18                      0"/>
-      <geometry>
-        <cylinder length="0.0889" radius="0.073025"/>
-      </geometry>
-    </collision>
-    <xacro:thick_walled_tube_inertial
-        inner_rad="${hub_dia / 2}" outer_rad="${tire_dia / 2}"
-        height="${tire_width}" mass="${wheel_mass}"/>
-  </link>
-  <joint name="left_rear_axle" type="continuous">
-    <parent link="chassis"/>
-    <child link="left_rear_wheel"/>
-    <origin xyz="-0.1675 0.1525 -0.0235" rpy="1.57079633 0 0"/>
-    <axis xyz="0 0 -1"/>
-    <limit effort="5.12766" velocity="244.8696"/>
-  </joint>
-  <transmission name="left_rear_axle_trans">
-    <type>transmission_interface/SimpleTransmission</type>
-    <joint name="left_rear_axle">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+  <xacro:macro name="rear_wheel" params="lr_prefix lr_reflect">
+    <link name="${lr_prefix}_rear_wheel">
+      <visual>
+        <origin xyz="0 0 0"/>
+        <geometry>
+          <cylinder length="${tire_width}" radius="${tire_dia/2}"/>
+        </geometry>
+        <material name="tire_mat"/>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0"/>
+        <geometry>
+          <cylinder length="${tire_width}" radius="${tire_dia/2}"/>
+        </geometry>
+      </collision>
+      <xacro:thick_walled_tube_inertial
+            inner_rad="${hub_dia/2}" outer_rad="${tire_dia/2}"
+            height="${tire_width}" mass="${wheel_mass}"/>
+    </link>
+    <joint name="${lr_prefix}_rear_axle" type="continuous">
+        <parent link="chassis"/>
+        <child link="${lr_prefix}_rear_wheel"/>
+        <origin xyz="-0.1675 ${lr_reflect*0.1525} -0.0235" rpy="${pi/2} 0 0"/>
+        <axis xyz="0 0 -1"/>
+        <limit effort="5.12766" velocity="244.8696"/>
     </joint>
-    <actuator name="left_rear_axle_act">
-      <mechanicalReduction>1</mechanicalReduction>
-    </actuator>
-  </transmission>
-  <gazebo reference="left_rear_wheel">
-    <material>Gazebo/Black</material>
-  </gazebo>
-  <!-- right -->
-  <link name="right_rear_wheel">
-    <visual>
-      <origin xyz="0                      6.93889390391e-18                      0"/>
-      <geometry>
-        <cylinder length="0.0889" radius="0.073025"/>
-      </geometry>
-      <material name="tire_mat"/>
-    </visual>
-    <collision>
-      <origin xyz="0                      6.93889390391e-18                      0"/>
-      <geometry>
-        <cylinder length="0.0889" radius="0.073025"/>
-      </geometry>
-    </collision>
-    <xacro:thick_walled_tube_inertial
-        inner_rad="${hub_dia / 2}" outer_rad="${tire_dia / 2}"
-        height="${tire_width}" mass="${wheel_mass}"/>
-  </link>
-  <joint name="right_rear_axle" type="continuous">
-    <parent link="chassis"/>
-    <child link="right_rear_wheel"/>
-    <origin xyz="-0.1675 -0.1525 -0.0235" rpy="1.57079633 0 0"/>
-    <axis xyz="0 0 -1"/>
-    <limit effort="5.12766" velocity="244.8696"/>
-  </joint>
-  <transmission name="right_rear_axle_trans">
-    <type>transmission_interface/SimpleTransmission</type>
-    <joint name="right_rear_axle">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-    </joint>
-    <actuator name="right_rear_axle_act">
-      <mechanicalReduction>1</mechanicalReduction>
-    </actuator>
-  </transmission>
-  <gazebo reference="right_rear_wheel">
-    <material>Gazebo/Black</material>
-  </gazebo>
+    <transmission name="${lr_prefix}_rear_axle_trans">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="${lr_prefix}_rear_axle">
+        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="${lr_prefix}_rear_axle_act">
+        <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+    <gazebo reference="${lr_prefix}_rear_wheel">
+        <material>Gazebo/Black</material>
+    </gazebo>
+  </xacro:macro>
+  <xacro:rear_wheel lr_prefix="left" lr_reflect="1"/>
+  <xacro:rear_wheel lr_prefix="right" lr_reflect="-1"/>  
 
   <!-- gazebo plugins for control and odometry ground truth-->
   <gazebo>
