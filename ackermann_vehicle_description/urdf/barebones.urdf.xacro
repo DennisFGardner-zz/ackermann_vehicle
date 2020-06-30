@@ -21,13 +21,13 @@
   <xacro:property name="chassis_length" value="3.38"/>
   <xacro:property name="chassis_width" value="0.92"/>
   <xacro:property name="chassis_height" value="1.4"/>
-  <xacro:property name="chassis_mass" value="2.788"/>
+  <xacro:property name="chassis_mass" value="1000"/>
 
   <!-- tire interia is a hollow cylinder, hence hub_dia -->
   <xacro:property name="tire_dia" value="${0.575*2}"/>
   <xacro:property name="hub_dia" value="${tire_dia/1.5}"/>
   <xacro:property name="tire_width" value="${tire_dia/3.0}"/>
-  <xacro:property name="wheel_mass" value="0.29"/>
+  <xacro:property name="wheel_mass" value="10"/>
 
   <!-- tire left/right and front/rear separation -->
   <xacro:property name="tire_lr_separation" value="2.36"/>
@@ -35,14 +35,20 @@
   <xacro:property name="tire_z_offset" value="${chassis_height/2+0.614}"/>
   
   <!-- tire parameters -->
-  <xacro:property name="tire_effort" value="5.12766"/>
-  <xacro:property name="tire_velocity" value="244.8696"/>
+  <xacro:property name="tire_effort" value="1000000"/>
+  <xacro:property name="tire_velocity" value="1000000"/>
+  <xacro:property name="tire_mu1" value="0.9"/>
+  <xacro:property name="tire_mu2" value="0.9"/>
+  <xacro:property name="tire_kp" value="${1e8}"/>
+  <!-- <xacro:property name="tire_kd" value="1.0"/> -->
+  <xacro:property name="tire_minDepth" value="0.005"/>
 
   <!-- steeriing parameters -->
-  <xacro:property name="steeriing_effort" value="0.5649"/>
+  <xacro:property name="steeriing_effort" value="10000000"/>
   <xacro:property name="steeriing_lower" value="${-pi/4}"/>
   <xacro:property name="steeriing_upper" value="${pi/4}"/>
-  <xacro:property name="steeriing_velocity" value="4.553"/>
+  <xacro:property name="steeriing_velocity" value="1000000"/>
+
 
   
   <!-- - - - - - - - - - - Inertia Macros - - - - - - - - - - -->
@@ -51,7 +57,7 @@
   <xacro:macro name="null_inertial">
     <inertial>
       <mass value="0.001"/>
-      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
+      <inertia ixx="0.00001" ixy="0" ixz="0" iyy="0.00001" iyz="0" izz="0.00001"/>
     </inertial>
   </xacro:macro>
   
@@ -196,6 +202,11 @@
         </actuator>
     </transmission>
     <gazebo reference="${lr_prefix}_front_wheel">
+        <mu1 value="${tire_mu1}"/>
+        <mu2 value="${tire_mu2}"/>
+        <kp value="${tire_kp}"/>
+        <!-- <kd value="${tire_kd}"/> -->
+        <minDepth value="${tire_minDepth}"/>
         <material>Gazebo/Black</material>
     </gazebo>
   </xacro:macro>
@@ -241,6 +252,11 @@
         </actuator>
     </transmission>
     <gazebo reference="${lr_prefix}_rear_wheel">
+        <mu1 value="${tire_mu1}"/>
+        <mu2 value="${tire_mu2}"/>
+        <kp value="${tire_kp}"/>
+        <!-- <kd value="${tire_kd}"/> -->
+        <minDepth value="${tire_minDepth}"/>
         <material>Gazebo/Black</material>
     </gazebo>
   </xacro:macro>
