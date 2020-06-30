@@ -16,7 +16,7 @@
   right -1 
   -->
 
-  <!-- - - - - - - - - - - dimensions and mass - - - - - - - - - - -->
+  <!-- - - - - - - - - - dimensions, mass, and parameters - - - - - - - - - -->
 
   <xacro:property name="chassis_length" value="1.0"/>
   <xacro:property name="chassis_width" value="0.168"/>
@@ -33,9 +33,16 @@
   <xacro:property name="tire_lr_separation" value="${2*0.1525}"/>
   <xacro:property name="tire_fr_separation" value="${2*0.1675}"/>
   
-  <!-- tire effort and veloicty -->
+  <!-- tire parameters -->
   <xacro:property name="tire_effort" value="5.12766"/>
   <xacro:property name="tire_velocity" value="244.8696"/>
+
+  <!-- steeriing parameters -->
+  <xacro:property name="steeriing_effort" value="0.5649"/>
+  <xacro:property name="steeriing_lower" value="${-pi/4}"/>
+  <xacro:property name="steeriing_upper" value="${pi/4}"/>
+  <xacro:property name="steeriing_velocity" value="4.553"/>
+
   
   <!-- - - - - - - - - - - Inertia Macros - - - - - - - - - - -->
   
@@ -89,6 +96,7 @@
   
   
   <!-- - - - - - - - - - - base_link - - - - - - - - - - -->
+
   <link name="base_link"/>
 
   <!-- chassis -->
@@ -135,7 +143,7 @@
         <child link="${lr_prefix}_front_axle_carrier"/>
         <origin xyz="${tire_fr_separation/2} ${lr_reflect*tire_lr_separation/2} 0"/>
         <axis xyz="0 0 1"/>
-        <limit effort="0.5649" lower="-0.785398163" upper="0.785398163" velocity="4.553"/>
+        <limit effort="${steeriing_effort}" lower="${steeriing_lower}" upper="${steeriing_upper}" velocity="${steeriing_velocity}"/>
     </joint>
     <transmission name="${lr_prefix}_steering_trans">
         <type>transmission_interface/SimpleTransmission</type>
