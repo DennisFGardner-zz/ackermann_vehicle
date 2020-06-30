@@ -29,9 +29,13 @@
   <xacro:property name="tire_width" value="0.0889"/>
   <xacro:property name="wheel_mass" value="0.29"/>
 
-  <!-- wheel left/right and front/rear separation -->
-  <xacro:property name="wheel_lr_separation" value="${2*0.1525}"/>
-  <xacro:property name="wheel_fr_separation" value="${2*0.1675}"/>
+  <!-- tire left/right and front/rear separation -->
+  <xacro:property name="tire_lr_separation" value="${2*0.1525}"/>
+  <xacro:property name="tire_fr_separation" value="${2*0.1675}"/>
+  
+  <!-- tire effort and veloicty -->
+  <xacro:property name="tire_effort" value="5.12766"/>
+  <xacro:property name="tire_velocity" value="244.8696"/>
   
   <!-- - - - - - - - - - - Inertia Macros - - - - - - - - - - -->
   
@@ -129,7 +133,7 @@
     <joint name="${lr_prefix}_steering_joint" type="revolute">
         <parent link="chassis"/>
         <child link="${lr_prefix}_front_axle_carrier"/>
-        <origin xyz="${wheel_fr_separation/2} ${lr_reflect*wheel_lr_separation/2} 0"/>
+        <origin xyz="${tire_fr_separation/2} ${lr_reflect*tire_lr_separation/2} 0"/>
         <axis xyz="0 0 1"/>
         <limit effort="0.5649" lower="-0.785398163" upper="0.785398163" velocity="4.553"/>
     </joint>
@@ -171,7 +175,7 @@
         <child link="${lr_prefix}_front_wheel"/>
         <origin rpy="${pi/2} 0 0"/>
         <axis xyz="0 0 -1"/>
-        <limit effort="5.12766" velocity="244.8696"/>
+        <limit effort="${tire_effort}" velocity="${tire_velocity}"/>
     </joint>
     <transmission name="${lr_prefix}_front_axle_trans">
         <type>transmission_interface/SimpleTransmission</type>
@@ -192,7 +196,7 @@
 
   <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
   <!-- REAR -->
-  <xacro:macro name="rear_wheel" params="lr_prefix lr_reflect">
+  <xacro:macro name="rear_tires" params="lr_prefix lr_reflect">
     <link name="${lr_prefix}_rear_wheel">
       <visual>
         <origin xyz="0 0 0"/>
@@ -214,9 +218,9 @@
     <joint name="${lr_prefix}_rear_axle" type="continuous">
         <parent link="chassis"/>
         <child link="${lr_prefix}_rear_wheel"/>
-        <origin xyz="${-wheel_fr_separation/2} ${lr_reflect*wheel_lr_separation/2} 0" rpy="${pi/2} 0 0"/>
+        <origin xyz="${-tire_fr_separation/2} ${lr_reflect*tire_lr_separation/2} 0" rpy="${pi/2} 0 0"/>
         <axis xyz="0 0 -1"/>
-        <limit effort="5.12766" velocity="244.8696"/>
+        <limit effort="${tire_effort}" velocity="${tire_velocity}"/>
     </joint>
     <transmission name="${lr_prefix}_rear_axle_trans">
         <type>transmission_interface/SimpleTransmission</type>
@@ -231,8 +235,8 @@
         <material>Gazebo/Black</material>
     </gazebo>
   </xacro:macro>
-  <xacro:rear_wheel lr_prefix="left" lr_reflect="1"/>
-  <xacro:rear_wheel lr_prefix="right" lr_reflect="-1"/>  
+  <xacro:rear_tires lr_prefix="left" lr_reflect="1"/>
+  <xacro:rear_tires lr_prefix="right" lr_reflect="-1"/>  
 
   <!-- gazebo plugins for control and odometry ground truth-->
   <gazebo>
