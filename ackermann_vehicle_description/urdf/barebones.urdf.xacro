@@ -26,12 +26,12 @@
   <!-- tire interia is a hollow cylinder, hence hub_dia -->
   <xacro:property name="tire_dia" value="0.14605"/>
   <xacro:property name="hub_dia" value="${tire_dia/1.5}"/>
-  <xacro:property name="tire_width" value="0.0889"/>
+  <xacro:property name="tire_width" value="${tire_dia/1.5}"/>
   <xacro:property name="wheel_mass" value="0.29"/>
 
   <!-- tire left/right and front/rear separation -->
-  <xacro:property name="tire_lr_separation" value="${2*0.1525}"/>
-  <xacro:property name="tire_fr_separation" value="${2*0.1675}"/>
+  <xacro:property name="tire_lr_separation" value="${chassis_width+tire_width}"/>
+  <xacro:property name="tire_fr_separation" value="${chassis_length}"/>
   
   <!-- tire parameters -->
   <xacro:property name="tire_effort" value="5.12766"/>
