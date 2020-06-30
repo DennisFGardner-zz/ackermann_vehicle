@@ -21,7 +21,7 @@
   <xacro:property name="chassis_length" value="3.38"/>
   <xacro:property name="chassis_width" value="0.92"/>
   <xacro:property name="chassis_height" value="1.4"/>
-  <xacro:property name="chassis_mass" value="1000"/>
+  <xacro:property name="chassis_mass" value="500"/>
 
   <!-- tire interia is a hollow cylinder, hence hub_dia -->
   <xacro:property name="tire_dia" value="${0.575*2}"/>
@@ -35,8 +35,8 @@
   <xacro:property name="tire_z_offset" value="${chassis_height/2+0.614}"/>
   
   <!-- tire parameters -->
-  <xacro:property name="tire_effort" value="1000000"/>
-  <xacro:property name="tire_velocity" value="1000000"/>
+  <xacro:property name="tire_effort" value="100"/>
+  <xacro:property name="tire_velocity" value="10"/>
   <xacro:property name="tire_mu1" value="0.9"/>
   <xacro:property name="tire_mu2" value="0.9"/>
   <xacro:property name="tire_kp" value="${1e8}"/>
@@ -44,10 +44,10 @@
   <xacro:property name="tire_minDepth" value="0.005"/>
 
   <!-- steeriing parameters -->
-  <xacro:property name="steeriing_effort" value="10000000"/>
+  <xacro:property name="steeriing_effort" value="0"/>
   <xacro:property name="steeriing_lower" value="${-pi/4}"/>
   <xacro:property name="steeriing_upper" value="${pi/4}"/>
-  <xacro:property name="steeriing_velocity" value="1000000"/>
+  <xacro:property name="steeriing_velocity" value="0"/>
 
 
   
