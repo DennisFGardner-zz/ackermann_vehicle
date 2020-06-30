@@ -44,10 +44,10 @@
   <xacro:property name="tire_minDepth" value="0.005"/>
 
   <!-- steeriing parameters -->
-  <xacro:property name="steeriing_effort" value="100000"/>
+  <xacro:property name="steeriing_effort" value="1000000000000000"/>
   <xacro:property name="steeriing_lower" value="${-pi/4}"/>
   <xacro:property name="steeriing_upper" value="${pi/4}"/>
-  <xacro:property name="steeriing_velocity" value="10"/>
+  <xacro:property name="steeriing_velocity" value="0.1"/>
 
 
   
