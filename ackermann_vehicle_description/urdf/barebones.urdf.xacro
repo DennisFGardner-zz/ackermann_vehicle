@@ -1,54 +1,52 @@
 <?xml version="1.0"?>
 
-<robot name="em_3905" xmlns:xacro="http://www.ros.org/wiki/xacro">
+<robot name="barebones" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
-  <!-- chassis_length is measured along the x axis, chassis_width
-       along the y axis, and chassis_height along the z axis. -->
+  <!-- - - - - - - - - - - conventions - - - - - - - - - - -->
+
+  <!-- width goes left to right (y-axis) -->
+  <!-- length is front to back (x-axis) -->
+  <!-- height is up down (z-axis) --> 
+  
+  <!-- reflection convention -->
+  <!-- 
+  front +1 
+  back  -1 
+  left  +1 
+  right -1 
+  -->
+
+  <!-- - - - - - - - - - - dimensions and mass - - - - - - - - - - -->
+
   <xacro:property name="chassis_length" value="1.0"/>
   <xacro:property name="chassis_width" value="0.168"/>
   <xacro:property name="chassis_height" value="0.02"/>
   <xacro:property name="chassis_mass" value="2.788"/>
 
-  <!-- hub_dia and tire_dia are the diameters of the hub and tire,
-       respectively. hex_hub_depth is the distance that the hex hub is
-       inset from the outer edge of the tire. It is set so that each wheel
-       is a "zero offset" wheel. hex_hub_depth = tire_width / 2 -
-       axle_length. -->
+
   <xacro:property name="hub_dia" value="0.09652"/>
   <xacro:property name="tire_dia" value="0.14605"/>
   <xacro:property name="tire_width" value="0.0889"/>
   <xacro:property name="hex_hub_depth" value="0.01445"/>
   <xacro:property name="wheel_mass" value="0.29"/>
 
-  <!-- hex_hub_dist is the distance between left and right hex hubs when
-       the shock absorbers are fully extended. axle_length is the distance
-       from a U joint to the corresponding hex hub. wheel_travel is the
-       vertical wheel travel. -->
   <xacro:property name="wheelbase" value="0.335"/>
   <xacro:property name="hex_hub_dist" value="0.365"/>
   <xacro:property name="axle_length" value="0.03"/>
   <xacro:property name="wheel_travel" value="0.084"/>
   <xacro:property name="shock_z_offset" value="0.0655"/>
-
-
-  <material name="chassis_mat">
-    <color rgba="0.5 0.5 0.5 1"/>
-  </material>
-  <material name="tire_mat">
-    <color rgba="0 0 0 1"/>
-  </material>
-
-  <!-- Null inertial element. This is needed to make the model work with
-       Gazebo. -->
+  
+  <!-- - - - - - - - - - - Inertia Macros - - - - - - - - - - -->
+  
+  <!-- Null -->
   <xacro:macro name="null_inertial">
     <inertial>
       <mass value="0.001"/>
       <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
     </inertial>
   </xacro:macro>
-
-  <!-- Inertia of a solid cuboid. Width is measured along the x axis, depth
-       along the y axis, and height along the z axis. -->
+  
+  <!-- solid cuboid -->
   <xacro:macro name="solid_cuboid_inertial"
                params="width depth height mass *origin">
     <inertial>
@@ -61,10 +59,8 @@
                izz="${mass * (width * width + depth * depth) / 12}"/>
     </inertial>
   </xacro:macro>
-
-  <!-- Inertia of a thick-walled cylindrical tube with open ends. Height is
-       measured along the z axis, which is the tube's axis. inner_rad and
-       outer_rad are the tube's inner and outer radii, respectively. -->
+  
+  <!-- thick-walled cylindrical tube with open ends -->
   <xacro:macro name="thick_walled_tube_inertial"
                params="inner_rad outer_rad height mass">
     <inertial>
@@ -79,13 +75,21 @@
                     outer_rad * outer_rad) / 2}"/>
     </inertial>
   </xacro:macro>
+  
+  <!-- - - - - - - - - - - colors - - - - - - - - - - -->
+  <material name="chassis_mat">
+    <color rgba="0.5 0.5 0.5 1"/>
+  </material>
 
-
-  <!-- base_link must have geometry so that its axes can be displayed in
-       rviz. -->
+  <material name="tire_mat">
+    <color rgba="0 0 0 1"/>
+  </material>
+  
+  
+  <!-- - - - - - - - - - - base_link - - - - - - - - - - -->
   <link name="base_link"/>
 
-  <!-- Chassis -->
+  <!-- chassis -->
   <link name="chassis">
     <visual>
       <origin xyz="0 0 ${-chassis_height / 2}"/>
