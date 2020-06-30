@@ -23,11 +23,15 @@
   <xacro:property name="chassis_height" value="0.02"/>
   <xacro:property name="chassis_mass" value="2.788"/>
 
-  <!-- tire interial is a hollow cylinder, hence hub_dia -->
-  <xacro:property name="hub_dia" value="0.09652"/>
+  <!-- tire interia is a hollow cylinder, hence hub_dia -->
   <xacro:property name="tire_dia" value="0.14605"/>
+  <xacro:property name="hub_dia" value="${tire_dia/1.5}"/>
   <xacro:property name="tire_width" value="0.0889"/>
   <xacro:property name="wheel_mass" value="0.29"/>
+
+  <!-- wheel left/right and front/rear separation -->
+  <xacro:property name="wheel_lr_separation" value="${2*0.1525}"/>
+  <xacro:property name="wheel_fr_separation" value="${2*0.1675}"/>
   
   <!-- - - - - - - - - - - Inertia Macros - - - - - - - - - - -->
   
@@ -125,7 +129,7 @@
     <joint name="${lr_prefix}_steering_joint" type="revolute">
         <parent link="chassis"/>
         <child link="${lr_prefix}_front_axle_carrier"/>
-        <origin xyz="0.1675 ${lr_reflect*0.1525} 0"/>
+        <origin xyz="${wheel_fr_separation/2} ${lr_reflect*wheel_lr_separation/2} 0"/>
         <axis xyz="0 0 1"/>
         <limit effort="0.5649" lower="-0.785398163" upper="0.785398163" velocity="4.553"/>
     </joint>
@@ -210,7 +214,7 @@
     <joint name="${lr_prefix}_rear_axle" type="continuous">
         <parent link="chassis"/>
         <child link="${lr_prefix}_rear_wheel"/>
-        <origin xyz="-0.1675 ${lr_reflect*0.1525} 0" rpy="${pi/2} 0 0"/>
+        <origin xyz="${-wheel_fr_separation/2} ${lr_reflect*wheel_lr_separation/2} 0" rpy="${pi/2} 0 0"/>
         <axis xyz="0 0 -1"/>
         <limit effort="5.12766" velocity="244.8696"/>
     </joint>
