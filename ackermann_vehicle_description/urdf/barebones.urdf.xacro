@@ -18,20 +18,21 @@
 
   <!-- - - - - - - - - - dimensions, mass, and parameters - - - - - - - - - -->
 
-  <xacro:property name="chassis_length" value="1.0"/>
-  <xacro:property name="chassis_width" value="0.168"/>
-  <xacro:property name="chassis_height" value="0.02"/>
+  <xacro:property name="chassis_length" value="3.38"/>
+  <xacro:property name="chassis_width" value="0.92"/>
+  <xacro:property name="chassis_height" value="1.4"/>
   <xacro:property name="chassis_mass" value="2.788"/>
 
   <!-- tire interia is a hollow cylinder, hence hub_dia -->
-  <xacro:property name="tire_dia" value="0.14605"/>
+  <xacro:property name="tire_dia" value="${0.575*2}"/>
   <xacro:property name="hub_dia" value="${tire_dia/1.5}"/>
-  <xacro:property name="tire_width" value="${tire_dia/1.5}"/>
+  <xacro:property name="tire_width" value="${tire_dia/3.0}"/>
   <xacro:property name="wheel_mass" value="0.29"/>
 
   <!-- tire left/right and front/rear separation -->
-  <xacro:property name="tire_lr_separation" value="${chassis_width+tire_width}"/>
-  <xacro:property name="tire_fr_separation" value="${chassis_length}"/>
+  <xacro:property name="tire_lr_separation" value="2.36"/>
+  <xacro:property name="tire_fr_separation" value="5.216"/>
+  <xacro:property name="tire_z_offset" value="${chassis_height/2+0.614}"/>
   
   <!-- tire parameters -->
   <xacro:property name="tire_effort" value="5.12766"/>
@@ -123,7 +124,7 @@
   <joint name="base_link_to_chasis" type="fixed">
     <parent link="base_link"/>
     <child link="chassis"/>
-    <origin xyz="0 0 ${chassis_height/2+tire_dia/2}"/>
+    <origin xyz="0 0 ${tire_dia/2+tire_z_offset}"/>
   </joint>
   <gazebo reference="chassis">
     <material>Gazebo/White</material>
@@ -141,7 +142,7 @@
     <joint name="${lr_prefix}_steering_joint" type="revolute">
         <parent link="chassis"/>
         <child link="${lr_prefix}_front_axle_carrier"/>
-        <origin xyz="${tire_fr_separation/2} ${lr_reflect*tire_lr_separation/2} 0"/>
+        <origin xyz="${tire_fr_separation/2} ${lr_reflect*tire_lr_separation/2} ${-tire_z_offset}"/>
         <axis xyz="0 0 1"/>
         <limit effort="${steeriing_effort}" lower="${steeriing_lower}" upper="${steeriing_upper}" velocity="${steeriing_velocity}"/>
     </joint>
@@ -226,7 +227,7 @@
     <joint name="${lr_prefix}_rear_axle" type="continuous">
         <parent link="chassis"/>
         <child link="${lr_prefix}_rear_wheel"/>
-        <origin xyz="${-tire_fr_separation/2} ${lr_reflect*tire_lr_separation/2} 0" rpy="${pi/2} 0 0"/>
+        <origin xyz="${-tire_fr_separation/2} ${lr_reflect*tire_lr_separation/2} ${-tire_z_offset}" rpy="${pi/2} 0 0"/>
         <axis xyz="0 0 -1"/>
         <limit effort="${tire_effort}" velocity="${tire_velocity}"/>
     </joint>
