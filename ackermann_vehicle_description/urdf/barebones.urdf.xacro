@@ -28,7 +28,7 @@
   <xacro:property name="hub_dia" value="${tire_dia/1.5}"/>
   <xacro:property name="tire_width" value="${tire_dia/3.0}"/> -->
   <xacro:property name="wheel_mass" value="1"/>
-  <xacro:property name="tire_dia" value="0.14605"/>
+  <xacro:property name="tire_dia" value="${2*0.14605}"/>
   <xacro:property name="hub_dia" value="${tire_dia/1.5}"/>
   <xacro:property name="tire_width" value="${tire_dia/3.0}"/>
   <!-- <xacro:property name="wheel_mass" value="0.29"/> -->
