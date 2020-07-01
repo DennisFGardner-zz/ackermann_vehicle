@@ -35,4 +35,4 @@ Gazebo Simulation:
 
 Drive around with the keyboard: 
 
-`rosrun ackermann_drive_teleop keyop.py 0.5 0.8 ackermann_vehicle/ackermann_cmd`
+`rosrun ackermann_drive_teleop keyop.py 6.7 0.78 ackermann_vehicle/ackermann_cmd`
